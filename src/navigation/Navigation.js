@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
@@ -10,6 +9,10 @@ import BottomNavigation from './BottomNavigation';
 import CreateStoryScreen from '../screens/CreateStoryScreen';
 import QuestionSelectionScreen from '../screens/QuestionSelectionScreen';
 import RecordVideoScreen from '../screens/RecordVideoScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import SavedStoriesScreen from '../screens/SavedStoriesScreen';
+import ActivityScreen from '../screens/ActivityScreen';
+import AnalyticsScreen from '../screens/AnalyticsScreen';
 
 // Auth screens
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -44,6 +47,10 @@ const MainStack = () => (
     <Stack.Screen name="CreateStory" component={CreateStoryScreen} />
     <Stack.Screen name="QuestionSelection" component={QuestionSelectionScreen} />
     <Stack.Screen name="RecordVideo" component={RecordVideoScreen} />
+    <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+    <Stack.Screen name="SavedStories" component={SavedStoriesScreen} />
+    <Stack.Screen name="Activity" component={ActivityScreen} />
+    <Stack.Screen name="Analytics" component={AnalyticsScreen} />
   </Stack.Navigator>
 );
 

@@ -186,66 +186,67 @@ const SearchScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content}>
-        {searchQuery.length === 0 ? (
-          <>
-            {/* Recent Searches */}
-            {recentSearches.length > 0 && (
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Tìm kiếm gần đây</Text>
-                  <TouchableOpacity onPress={() => setRecentSearches([])}>
-                    <Text style={styles.clearAll}>Xóa tất cả</Text>
-                  </TouchableOpacity>
-                </View>
-                {recentSearches.map((search, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.recentItem}
-                    onPress={() => setSearchQuery(search)}
-                  >
-                    <Ionicons name="time-outline" size={20} color="#666" />
-                    <Text style={styles.recentText}>{search}</Text>
-                    <TouchableOpacity onPress={() => clearRecentSearch(index)}>
-                      <Ionicons name="close" size={16} color="#666" />
-                    </TouchableOpacity>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-
-            {/* Trending Topics */}
+      {searchQuery.length === 0 ? (
+        <ScrollView style={styles.content}>
+          {/* Recent Searches */}
+          {recentSearches.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Chủ đề thịnh hành</Text>
-              <View style={styles.topicsGrid}>
-                {trendingTopics.map((topic) => (
-                  <TouchableOpacity
-                    key={topic.id}
-                    style={[styles.topicCard, { backgroundColor: topic.color }]}
-                    onPress={() => setSearchQuery(topic.title)}
-                  >
-                    <Text style={styles.topicTitle}>{topic.title}</Text>
-                    <Text style={styles.topicCount}>{topic.count}</Text>
-                  </TouchableOpacity>
-                ))}
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Tìm kiếm gần đây</Text>
+                <TouchableOpacity onPress={() => setRecentSearches([])}>
+                  <Text style={styles.clearAll}>Xóa tất cả</Text>
+                </TouchableOpacity>
               </View>
+              {recentSearches.map((search, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.recentItem}
+                  onPress={() => setSearchQuery(search)}
+                >
+                  <Ionicons name="time-outline" size={20} color="#666" />
+                  <Text style={styles.recentText}>{search}</Text>
+                  <TouchableOpacity onPress={() => clearRecentSearch(index)}>
+                    <Ionicons name="close" size={16} color="#666" />
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              ))}
             </View>
-          </>
-        ) : (
-          /* Search Results */
+          )}
+
+          {/* Trending Topics */}
           <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Chủ đề thịnh hành</Text>
+            <View style={styles.topicsGrid}>
+              {trendingTopics.map((topic) => (
+                <TouchableOpacity
+                  key={topic.id}
+                  style={[styles.topicCard, { backgroundColor: topic.color }]}
+                  onPress={() => setSearchQuery(topic.title)}
+                >
+                  <Text style={styles.topicTitle}>{topic.title}</Text>
+                  <Text style={styles.topicCount}>{topic.count}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </ScrollView>
+      ) : (
+        /* Search Results */
+        <View style={styles.content}>
+          <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>
               Kết quả cho "{searchQuery}"
             </Text>
-            <FlatList
-              data={searchResults[activeTab]}
-              renderItem={activeTab === 'stories' ? renderStoryItem : renderUserItem}
-              keyExtractor={(item) => item.id.toString()}
-              showsVerticalScrollIndicator={false}
-            />
           </View>
-        )}
-      </ScrollView>
+          <FlatList
+            data={searchResults[activeTab]}
+            renderItem={activeTab === 'stories' ? renderStoryItem : renderUserItem}
+            keyExtractor={(item) => item.id.toString()}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.flatListContent}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -475,6 +476,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  flatListContent: {
+    paddingBottom: 20,
   },
 });
 

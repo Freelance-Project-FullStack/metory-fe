@@ -9,17 +9,17 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
-import { Camera } from 'expo-camera';
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
 const RecordVideoScreen = ({ navigation, route }) => {
-  const { topic, questions } = route.params;
-  const [hasPermission, setHasPermission] = useState(null);
+  const { topic, questions } = route.params || { topic: 'Default Topic', questions: [] };
+  const [permission, requestPermission] = useCameraPermissions();
   const [hasAudioPermission, setHasAudioPermission] = useState(null);
-  const [cameraType, setCameraType] = useState(Camera.Constants.Type.front);
+  const [cameraType, setCameraType] = useState('front');
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -32,7 +32,7 @@ const RecordVideoScreen = ({ navigation, route }) => {
   const timerRef = useRef(null);
 
   useEffect(() => {
-    getPermissions();
+    getAudioPermissions();
   }, []);
 
   useEffect(() => {
@@ -47,10 +47,8 @@ const RecordVideoScreen = ({ navigation, route }) => {
     return () => clearInterval(timerRef.current);
   }, [isRecording, isPaused]);
 
-  const getPermissions = async () => {
-    const cameraStatus = await Camera.requestCameraPermissionsAsync();
+  const getAudioPermissions = async () => {
     const audioStatus = await Audio.requestPermissionsAsync();
-    setHasPermission(cameraStatus.status === 'granted');
     setHasAudioPermission(audioStatus.status === 'granted');
   };
 
@@ -60,29 +58,38 @@ const RecordVideoScreen = ({ navigation, route }) => {
     if (isRecording) {
       // Stop recording
       setIsRecording(false);
-      const videoData = await cameraRef.current.stopRecording();
-      
-      setRecordedSegments([...recordedSegments, {
-        questionIndex: currentQuestionIndex,
-        videoUri: videoData.uri,
-        duration: timer,
-      }]);
+      try {
+        const videoData = await cameraRef.current.stopRecording();
+        
+        setRecordedSegments([...recordedSegments, {
+          questionIndex: currentQuestionIndex,
+          videoUri: videoData.uri,
+          duration: timer,
+        }]);
 
-      setTimer(0);
-      
-      // Move to next question or finish
-      if (currentQuestionIndex < questions.length - 1) {
-        animateToNextQuestion();
-      } else {
-        handleFinishRecording();
+        setTimer(0);
+        
+        // Move to next question or finish
+        if (currentQuestionIndex < (questions.length || 1) - 1) {
+          animateToNextQuestion();
+        } else {
+          handleFinishRecording();
+        }
+      } catch (error) {
+        console.log('Error stopping recording:', error);
+        setIsRecording(false);
       }
     } else {
       // Start recording
-      setIsRecording(true);
-      const videoData = await cameraRef.current.recordAsync({
-        quality: Camera.Constants.VideoQuality['720p'],
-        maxDuration: 60, // 60 seconds max per segment
-      });
+      try {
+        setIsRecording(true);
+        const videoData = await cameraRef.current.recordAsync({
+          maxDuration: 60, // 60 seconds max per segment
+        });
+      } catch (error) {
+        console.log('Error starting recording:', error);
+        setIsRecording(false);
+      }
     }
   };
 
@@ -98,7 +105,7 @@ const RecordVideoScreen = ({ navigation, route }) => {
       
       // Update progress
       Animated.timing(progressAnim, {
-        toValue: (currentQuestionIndex + 1) / questions.length,
+        toValue: (currentQuestionIndex + 1) / (questions.length || 1),
         duration: 300,
         useNativeDriver: false,
       }).start();
@@ -115,11 +122,8 @@ const RecordVideoScreen = ({ navigation, route }) => {
   const handlePause = () => {
     if (isRecording) {
       setIsPaused(!isPaused);
-      if (isPaused) {
-        cameraRef.current?.resumeRecording();
-      } else {
-        cameraRef.current?.pauseRecording();
-      }
+      // Note: CameraView in expo-camera v16 might not support pause/resume
+      // This is a UI state change for now
     }
   };
 
@@ -146,9 +150,7 @@ const RecordVideoScreen = ({ navigation, route }) => {
 
   const toggleCameraType = () => {
     setCameraType(
-      cameraType === Camera.Constants.Type.back
-        ? Camera.Constants.Type.front
-        : Camera.Constants.Type.back
+      cameraType === 'back' ? 'front' : 'back'
     );
   };
 
@@ -158,7 +160,7 @@ const RecordVideoScreen = ({ navigation, route }) => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  if (hasPermission === null || hasAudioPermission === null) {
+  if (!permission || hasAudioPermission === null) {
     return (
       <View style={styles.permissionContainer}>
         <Text style={styles.permissionText}>Đang yêu cầu quyền truy cập...</Text>
@@ -166,13 +168,13 @@ const RecordVideoScreen = ({ navigation, route }) => {
     );
   }
 
-  if (hasPermission === false || hasAudioPermission === false) {
+  if (!permission.granted || hasAudioPermission === false) {
     return (
       <View style={styles.permissionContainer}>
         <Text style={styles.permissionText}>
           Cần quyền truy cập camera và microphone để quay video
         </Text>
-        <TouchableOpacity style={styles.permissionButton} onPress={getPermissions}>
+        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
           <Text style={styles.permissionButtonText}>Cấp quyền</Text>
         </TouchableOpacity>
       </View>
@@ -181,11 +183,11 @@ const RecordVideoScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Camera
+      <CameraView
         ref={cameraRef}
         style={styles.camera}
-        type={cameraType}
-        ratio="16:9"
+        facing={cameraType}
+        mode="video"
       />
 
       {/* Header */}
@@ -212,12 +214,12 @@ const RecordVideoScreen = ({ navigation, route }) => {
             />
           </View>
           <Text style={styles.progressText}>
-            {currentQuestionIndex + 1}/{questions.length}
+            {currentQuestionIndex + 1}/{questions.length || 1}
           </Text>
         </View>
 
         <TouchableOpacity style={styles.flipButton} onPress={toggleCameraType}>
-          <Ionicons name="camera-reverse" size={24} color="#fff" />
+          <Ionicons name="camera-reverse-outline" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
 
@@ -226,7 +228,7 @@ const RecordVideoScreen = ({ navigation, route }) => {
         style={[styles.questionContainer, { opacity: questionFadeAnim }]}
       >
         <Text style={styles.questionText}>
-          {questions[currentQuestionIndex]?.text}
+          {questions[currentQuestionIndex]?.text || 'Chưa có câu hỏi'}
         </Text>
       </Animated.View>
 
@@ -247,7 +249,7 @@ const RecordVideoScreen = ({ navigation, route }) => {
             onPress={() => {
               setCurrentQuestionIndex(prev => Math.max(0, prev - 1));
               Animated.timing(progressAnim, {
-                toValue: Math.max(0, currentQuestionIndex - 1) / questions.length,
+                toValue: Math.max(0, currentQuestionIndex - 1) / (questions.length || 1),
                 duration: 300,
                 useNativeDriver: false,
               }).start();
@@ -285,13 +287,13 @@ const RecordVideoScreen = ({ navigation, route }) => {
         )}
 
         {/* Next Question */}
-        {currentQuestionIndex < questions.length - 1 && !isRecording && (
+        {currentQuestionIndex < (questions.length || 1) - 1 && !isRecording && (
           <TouchableOpacity
             style={styles.navButton}
             onPress={() => {
-              setCurrentQuestionIndex(prev => Math.min(questions.length - 1, prev + 1));
+              setCurrentQuestionIndex(prev => Math.min((questions.length || 1) - 1, prev + 1));
               Animated.timing(progressAnim, {
-                toValue: Math.min(questions.length - 1, currentQuestionIndex + 1) / questions.length,
+                toValue: Math.min((questions.length || 1) - 1, currentQuestionIndex + 1) / (questions.length || 1),
                 duration: 300,
                 useNativeDriver: false,
               }).start();

@@ -3,9 +3,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
 // Import screens
-import NewHomeScreen from '../screens/NewHomeScreen';
-import NewSearchScreen from '../screens/NewSearchScreen';
-import NewProfileScreen from '../screens/NewProfileScreen';
+import HomeScreen from '../screens/HomeScreen';
+import SearchScreen from '../screens/SearchScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 import CreateStoryScreen from '../screens/CreateStoryScreen';
 
 const Tab = createBottomTabNavigator();
@@ -45,14 +45,14 @@ export default function BottomNavigation() {
     >
       <Tab.Screen 
         name="Home" 
-        component={NewHomeScreen}
+        component={HomeScreen}
         options={{
           tabBarLabel: 'Trang chủ',
         }}
       />
       <Tab.Screen 
         name="Search" 
-        component={NewSearchScreen}
+        component={SearchScreen}
         options={{
           tabBarLabel: 'Tìm kiếm',
         }}
@@ -66,7 +66,7 @@ export default function BottomNavigation() {
       />
       <Tab.Screen 
         name="Profile" 
-        component={NewProfileScreen}
+        component={ProfileScreen}
         options={{
           tabBarLabel: 'Cá nhân',
         }}
