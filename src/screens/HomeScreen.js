@@ -8,10 +8,13 @@ import {
   Image,
   Dimensions,
   FlatList,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { Video } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -22,6 +25,7 @@ import Animated, {
 const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const translateY = useSharedValue(0);
   const videoRefs = useRef([]);
@@ -238,7 +242,7 @@ const HomeScreen = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { paddingTop: Platform.OS === 'android' ? 0 : insets.top }]}>
       <PanGestureHandler onGestureEvent={gestureHandler}>
         <Animated.View style={[styles.container, animatedStyle]}>
           <FlatList
@@ -248,6 +252,7 @@ const HomeScreen = ({ navigation }) => {
             pagingEnabled
             vertical
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 90 : 95 + insets.bottom }}
             onMomentumScrollEnd={(event) => {
               const index = Math.round(event.nativeEvent.contentOffset.y / height);
               setCurrentStoryIndex(index);
@@ -263,7 +268,7 @@ const HomeScreen = ({ navigation }) => {
       >
         <Ionicons name="add" size={24} color="#fff" />
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 

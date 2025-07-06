@@ -1,6 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
@@ -12,6 +14,8 @@ const Tab = createBottomTabNavigator();
 
 // Bottom Tab Navigator
 export default function BottomNavigation() {
+  const insets = useSafeAreaInsets();
+  
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -20,9 +24,21 @@ export default function BottomNavigation() {
           backgroundColor: '#000',
           borderTopColor: '#1a1a1a',
           borderTopWidth: 1,
-          height: 85,
-          paddingBottom: 20,
+          height: Platform.OS === 'android' ? 80 : 85 + insets.bottom,
+          paddingBottom: Platform.OS === 'android' ? 15 : insets.bottom + 5,
           paddingTop: 10,
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          elevation: Platform.OS === 'android' ? 8 : 0,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: -2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
         },
         tabBarActiveTintColor: '#007AFF',
         tabBarInactiveTintColor: '#666',

@@ -9,10 +9,14 @@ import {
   Image,
   Switch,
   Alert,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ProfileScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [autoPlay, setAutoPlay] = useState(true);
@@ -136,10 +140,13 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <View style={[styles.container, { paddingTop: Platform.OS === 'android' ? 0 : insets.top }]}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 90 : 95 + insets.bottom }}
+      >
         {/* Header */}
-        <View style={styles.header}>
+        <View style={[styles.header, { paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0 }]}>
           <TouchableOpacity style={styles.settingsButton} onPress={showSettingsModal}>
             <Ionicons name="settings-outline" size={24} color="#fff" />
           </TouchableOpacity>
@@ -286,7 +293,7 @@ const ProfileScreen = ({ navigation }) => {
           </Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

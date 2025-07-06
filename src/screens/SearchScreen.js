@@ -9,10 +9,14 @@ import {
   ScrollView,
   Image,
   FlatList,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SearchScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('stories'); // 'stories' or 'users'
   const [recentSearches, setRecentSearches] = useState([
@@ -139,9 +143,9 @@ const SearchScreen = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { paddingTop: Platform.OS === 'android' ? 0 : insets.top }]}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0 }]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -187,7 +191,10 @@ const SearchScreen = ({ navigation }) => {
       </View>
 
       {searchQuery.length === 0 ? (
-        <ScrollView style={styles.content}>
+        <ScrollView 
+          style={styles.content}
+          contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 90 : 95 + insets.bottom }}
+        >
           {/* Recent Searches */}
           {recentSearches.length > 0 && (
             <View style={styles.section}>
@@ -243,11 +250,11 @@ const SearchScreen = ({ navigation }) => {
             renderItem={activeTab === 'stories' ? renderStoryItem : renderUserItem}
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.flatListContent}
+            contentContainerStyle={[styles.flatListContent, { paddingBottom: Platform.OS === 'android' ? 90 : 95 + insets.bottom }]}
           />
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

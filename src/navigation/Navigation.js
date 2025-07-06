@@ -1,6 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Platform, StatusBar as RNStatusBar } from 'react-native';
 
 // Import navigators
 import BottomNavigation from './BottomNavigation';
@@ -26,7 +28,11 @@ const AuthStack = () => (
   <Stack.Navigator 
     screenOptions={{ 
       headerShown: false,
-      cardStyle: { backgroundColor: '#000' }
+      cardStyle: { backgroundColor: '#000' },
+      contentStyle: { 
+        backgroundColor: '#000',
+        paddingTop: Platform.OS === 'android' ? RNStatusBar.currentHeight : 0
+      }
     }}
   >
     <Stack.Screen name="Login" component={LoginScreen} />
@@ -40,7 +46,11 @@ const MainStack = () => (
   <Stack.Navigator 
     screenOptions={{ 
       headerShown: false,
-      cardStyle: { backgroundColor: '#000' }
+      cardStyle: { backgroundColor: '#000' },
+      contentStyle: { 
+        backgroundColor: '#000',
+        paddingTop: Platform.OS === 'android' ? RNStatusBar.currentHeight : 0
+      }
     }}
   >
     <Stack.Screen name="MainTabs" component={BottomNavigation} />
@@ -60,9 +70,11 @@ export default function Navigation() {
   const isAuthenticated = true;
 
   return (
-    <NavigationContainer>
-      <StatusBar style="light" backgroundColor="#000" />
-      {isAuthenticated ? <MainStack /> : <AuthStack />}
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <StatusBar style="light" backgroundColor="#000" translucent={false} />
+        {isAuthenticated ? <MainStack /> : <AuthStack />}
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

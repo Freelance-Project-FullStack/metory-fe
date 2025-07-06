@@ -7,10 +7,13 @@ import {
   SafeAreaView,
   ScrollView,
   Alert,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const CreateStoryScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [selectedTopic, setSelectedTopic] = useState(null);
 
   const topics = [
@@ -54,7 +57,11 @@ const CreateStoryScreen = ({ navigation }) => {
         <View style={styles.placeholder} />
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 90 : 95 + insets.bottom }}
+      >
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Chọn chủ đề</Text>
           <Text style={styles.sectionSubtitle}>
