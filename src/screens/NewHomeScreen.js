@@ -8,9 +8,8 @@ import {
   Image,
   Dimensions,
   FlatList,
-  PanGestureHandler,
-  State,
 } from 'react-native';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { Video } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, {
@@ -20,7 +19,6 @@ import Animated, {
   withSpring,
   runOnJS,
 } from 'react-native-reanimated';
-
 const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
@@ -145,10 +143,10 @@ const HomeScreen = ({ navigation }) => {
         ref={(ref) => (videoRefs.current[index] = ref)}
         style={styles.video}
         source={{ uri: item.videoUrl }}
-        resizeMode="cover"
+        contentFit="cover" // resizeMode -> contentFit
         shouldPlay={index === currentStoryIndex}
-        isLooping
-        isMuted={false}
+        isLooping // isLooping -> loop (hoặc giữ nguyên isLooping vì có thể vẫn được hỗ trợ)
+        isMuted={false} // isMuted -> muted
       />
 
       {/* Gradient Overlay */}
@@ -272,7 +270,7 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#000'
   },
   storyContainer: {
     width: width,
