@@ -12,6 +12,7 @@ import {
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
+import metoryApi from '../api/metoryApi';
 
 const { width, height } = Dimensions.get('window');
 
@@ -192,6 +193,42 @@ const RecordVideoScreen = ({ navigation, route }) => {
       ]
     );
   };
+
+  const handleUploadVideo = async (videoUri, storyId, questionId) => {
+  try {
+    setUploading(true);
+    const fileInfo = await FileSystem.getInfoAsync(videoUri);
+    const fileName = videoUri.split('/').pop();
+
+    const uploadUrlResponse = await metoryApi.post(
+      `/stories/${storyId}/upload-url`,
+      { file_name: fileName } 
+    );
+
+    const { url, fields } = uploadUrlResponse.data; // Giả sử backend trả về thông tin này
+
+    // Bước 2: Upload video thẳng lên Cloudflare R2
+    // Dùng thư viện như 'react-native-background-upload' hoặc fetch API với FormData
+    // Đây là bước quan trọng: video không đi qua server của bạn!
+    const response = await FileSystem.uploadAsync(url, videoUri, {
+        httpMethod: 'POST',
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: 'file',
+        // fields này được trả về từ R2/S3
+    });
+
+    if (response.status === 204) { // Hoặc 200 tùy cấu hình R2
+       console.log("Upload successful!");
+       // Bước 3: Thông báo cho backend rằng video đã upload xong (tùy chọn)
+       await metoryApi.post(`/stories/${storyId}/video-uploaded`, { questionId, videoUrl: '' });
+    }
+
+  } catch (error) {
+    console.error("Upload failed:", error);
+  } finally {
+    setUploading(false);
+  }
+};
 
   const toggleCameraType = () => {
     setCameraType(

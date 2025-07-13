@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic-settings
+supabase
+gotrue
+boto3
+google-generativeai
+python-jose[cryptography]
+python-multipart

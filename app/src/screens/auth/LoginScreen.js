@@ -9,20 +9,33 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import metoryApi from '../../api/metoryApi';
+import * as SecureStore from 'expo-secure-store';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin');
-      return;
-    }
-    // Handle login logic here
-    Alert.alert('Thành công', 'Đăng nhập thành công!');
-  };
+  const handleLogin = async () => {
+  try {
+    setLoading(true);
+    const response = await metoryApi.post('/auth/login', { email, password });
+    const { access_token } = response.data;
+
+    // Lưu token an toàn
+    await SecureStore.setItemAsync('userToken', access_token);
+
+    // Cập nhật state và điều hướng đến màn hình chính
+    // authContext.signIn(access_token); 
+
+  } catch (error) {
+    console.error("Login failed:", error.response?.data);
+    // Hiển thị lỗi cho người dùng
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <SafeAreaView style={styles.container}>
