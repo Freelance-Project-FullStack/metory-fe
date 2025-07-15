@@ -9,6 +9,7 @@ import {
   Dimensions,
   FlatList,
   Platform,
+  Share
 } from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import Video from 'expo-video';
@@ -124,6 +125,31 @@ const HomeScreen = ({ navigation }) => {
     },
   });
 
+  const handleShare = async (story) => {
+    try {
+      const result = await Share.share({
+        message: `Xem story "${story.title}" của ${story.user.name} trên Metory!`,
+        url: `https://metory.app/story/${story.id}`, // URL này chỉ là giả định
+        title: `Chia sẻ story: ${story.title}`
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+          console.log(`Shared with type: ${result.activityType}`);
+        } else {
+          // shared
+          console.log('Story shared successfully');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+        console.log('Share dismissed');
+      }
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: translateY.value }],
@@ -210,7 +236,7 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.actionText}>{formatNumber(item.comments)}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity style={styles.actionButton} onPress={() => handleShare(item)}> {/* <--- Thêm onPress */}
           <Ionicons name="arrow-redo-outline" size={28} color="#fff" />
           <Text style={styles.actionText}>{formatNumber(item.shares)}</Text>
         </TouchableOpacity>

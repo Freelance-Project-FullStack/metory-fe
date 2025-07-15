@@ -11,6 +11,7 @@ import BottomNavigation from './BottomNavigation';
 import CreateStoryScreen from '../screens/CreateStoryScreen';
 import QuestionSelectionScreen from '../screens/QuestionSelectionScreen';
 import RecordVideoScreen from '../screens/RecordVideoScreen';
+import EditStoryScreen from '../screens/EditStoryScreen'; 
 import EditProfileScreen from '../screens/EditProfileScreen';
 import SavedStoriesScreen from '../screens/SavedStoriesScreen';
 import ActivityScreen from '../screens/ActivityScreen';
@@ -57,6 +58,7 @@ const MainStack = () => (
     <Stack.Screen name="CreateStory" component={CreateStoryScreen} />
     <Stack.Screen name="QuestionSelection" component={QuestionSelectionScreen} />
     <Stack.Screen name="RecordVideo" component={RecordVideoScreen} />
+    <Stack.Screen name="EditStory" component={EditStoryScreen} />
     <Stack.Screen name="EditProfile" component={EditProfileScreen} />
     <Stack.Screen name="SavedStories" component={SavedStoriesScreen} />
     <Stack.Screen name="Activity" component={ActivityScreen} />

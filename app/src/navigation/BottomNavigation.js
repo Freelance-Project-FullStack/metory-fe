@@ -2,7 +2,6 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
@@ -14,8 +13,6 @@ const Tab = createBottomTabNavigator();
 
 // Bottom Tab Navigator
 export default function BottomNavigation() {
-  const insets = useSafeAreaInsets();
-  
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
