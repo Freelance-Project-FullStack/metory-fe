@@ -72,7 +72,7 @@ export default function Navigation() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <StatusBar style="light" backgroundColor="#000" translucent={false} />
+        <StatusBar style="light" translucent={false} />
         {isAuthenticated ? <MainStack /> : <AuthStack />}
       </NavigationContainer>
     </SafeAreaProvider>

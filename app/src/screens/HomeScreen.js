@@ -9,10 +9,9 @@ import {
   Dimensions,
   FlatList,
   Platform,
-  StatusBar,
 } from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
-import { Video } from 'expo-av';
+import Video from 'expo-video';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
@@ -147,10 +146,10 @@ const HomeScreen = ({ navigation }) => {
         ref={(ref) => (videoRefs.current[index] = ref)}
         style={styles.video}
         source={{ uri: item.videoUrl }}
-        contentFit="cover" // resizeMode -> contentFit
-        shouldPlay={index === currentStoryIndex}
-        isLooping // isLooping -> loop (hoặc giữ nguyên isLooping vì có thể vẫn được hỗ trợ)
-        isMuted={false} // isMuted -> muted
+        resizeMode="cover"
+        isPlaying={index === currentStoryIndex}
+        isLooping
+        muted={false}
       />
 
       {/* Gradient Overlay */}
@@ -164,7 +163,7 @@ const HomeScreen = ({ navigation }) => {
         >
           <Ionicons name="person-circle-outline" size={28} color="#fff" />
         </TouchableOpacity>
-        
+
         <View style={styles.userInfo}>
           <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
           <View style={styles.userDetails}>
@@ -225,15 +224,14 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Progress Indicators */}
       <View style={styles.progressContainer}>
         {stories.map((_, idx) => (
           <View
             key={idx}
             style={[
               styles.progressDot,
-              idx === index && styles.activeProgressDot,
-              idx < index && styles.completedProgressDot,
+              idx === currentStoryIndex && styles.activeProgressDot,
+              idx < currentStoryIndex && styles.completedProgressDot,
             ]}
           />
         ))}
