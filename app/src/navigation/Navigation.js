@@ -28,12 +28,7 @@ const Stack = createNativeStackNavigator();
 const AuthStack = () => (
   <Stack.Navigator 
     screenOptions={{ 
-      headerShown: false,
-      cardStyle: { backgroundColor: '#000' },
-      contentStyle: { 
-        backgroundColor: '#000',
-        paddingTop: Platform.OS === 'android' ? RNStatusBar.currentHeight : 0
-      }
+      headerShown: false
     }}
   >
     <Stack.Screen name="Login" component={LoginScreen} />

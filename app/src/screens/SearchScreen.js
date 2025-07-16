@@ -145,7 +145,7 @@ const SearchScreen = ({ navigation }) => {
   return (
     <View style={[styles.container, { paddingTop: Platform.OS === 'android' ? 0 : insets.top }]}>
       {/* Header */}
-      <View style={[styles.header, { paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0 }]}>
+      <View style={[styles.header]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}

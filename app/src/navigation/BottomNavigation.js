@@ -21,12 +21,11 @@ export default function BottomNavigation() {
           backgroundColor: '#000',
           borderTopColor: '#1a1a1a',
           borderTopWidth: 1,
-          // marginBottom:  Platform.OS === 'android' ? 40 :0,
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
-          elevation: Platform.OS === 'android' ? 8 : 0,
+          elevation: Platform.OS === 'android' ? 20 : 0,
           shadowColor: '#000',
           shadowOffset: {
             width: 0,

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { Ionicons } from '@expo/vector-icons';
-import Video from 'expo-video';
+import { Video } from 'expo-av';
 import metoryApi from '../api/metoryApi'; // Giả sử đây là instance của Axios
 
 const EditStoryScreen = ({ navigation, route }) => {
@@ -54,11 +54,11 @@ const EditStoryScreen = ({ navigation, route }) => {
     // Chuẩn bị dữ liệu cho các phân đoạn dưới dạng JSON string
     const segmentsMetadata = segments.map(seg => ({
       // Sử dụng questionIndex hoặc một ID câu hỏi thật nếu có
-      question_id: seg.questionIndex, 
+      question_id: seg.questionIndex,
       duration: seg.duration,
     }));
     formData.append('segments', JSON.stringify(segmentsMetadata));
-    
+
     // BƯỚC 3: Thêm các file video
     // Tên file và type rất quan trọng để backend xử lý
     segments.forEach((segment, index) => {
@@ -75,12 +75,12 @@ const EditStoryScreen = ({ navigation, route }) => {
       // khi bạn truyền một đối tượng FormData.
       const response = await metoryApi.post('/stories', formData, {
         headers: {
-            'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data',
         },
         // Thêm onUploadProgress để theo dõi tiến trình upload (tùy chọn)
         onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            console.log(`Uploading... ${percentCompleted}%`);
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          console.log(`Uploading... ${percentCompleted}%`);
         },
       });
 
@@ -133,29 +133,29 @@ const EditStoryScreen = ({ navigation, route }) => {
         <Ionicons name="information-circle-outline" size={20} color="#007AFF" />
         <Text style={styles.tipText}>Giữ và kéo để sắp xếp lại thứ tự các video.</Text>
       </View>
-      
+
       {isSubmitting ? (
-         <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#fff" />
-            <Text style={styles.loadingText}>Đang đăng story của bạn...</Text>
-            <Text style={styles.loadingSubText}>Vui lòng không thoát ứng dụng.</Text>
-         </View>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={styles.loadingText}>Đang đăng story của bạn...</Text>
+          <Text style={styles.loadingSubText}>Vui lòng không thoát ứng dụng.</Text>
+        </View>
       ) : (
         <DraggableFlatList
-            data={segments}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.videoUri}
-            onDragEnd={handleReorder}
-            containerStyle={{ flex: 1 }}
+          data={segments}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.videoUri}
+          onDragEnd={handleReorder}
+          containerStyle={{ flex: 1 }}
         />
       )}
 
       {!isSubmitting && (
         <View style={styles.footer}>
-            <TouchableOpacity style={styles.submitButton} onPress={handleSubmitStory}>
-                <Text style={styles.submitButtonText}>Đăng Story</Text>
-                <Ionicons name="rocket-outline" size={20} color="#fff" />
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmitStory}>
+            <Text style={styles.submitButtonText}>Đăng Story</Text>
+            <Ionicons name="rocket-outline" size={20} color="#fff" />
+          </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
@@ -163,24 +163,24 @@ const EditStoryScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#000' },
-    header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16 },
-    backButton: { padding: 8 },
-    headerTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-    tipContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a1a1a', padding: 12, marginHorizontal: 16, borderRadius: 8, marginBottom: 16 },
-    tipText: { color: '#ccc', fontSize: 14, marginLeft: 8 },
-    segmentItem: { flexDirection: 'row', alignItems: 'center', padding: 12, marginHorizontal: 16, marginBottom: 12, borderRadius: 8 },
-    thumbnail: { width: 60, height: 80, borderRadius: 6, backgroundColor: '#333' },
-    segmentInfo: { flex: 1, marginLeft: 12, marginRight: 8 },
-    questionText: { color: '#fff', fontSize: 15, fontWeight: 'bold', marginBottom: 8 },
-    durationText: { color: '#888', fontSize: 12 },
-    deleteButton: { padding: 8 },
-    footer: { padding: 16, borderTopWidth: 1, borderColor: '#1a1a1a' },
-    submitButton: { backgroundColor: '#007AFF', borderRadius: 12, height: 50, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
-    submitButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold', marginRight: 8 },
-    loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 },
-    loadingText: { color: '#fff', marginTop: 16, fontSize: 18, fontWeight: 'bold' },
-    loadingSubText: { color: '#aaa', marginTop: 8, fontSize: 14 }
+  container: { flex: 1, backgroundColor: '#000' },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16 },
+  backButton: { padding: 8 },
+  headerTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  tipContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a1a1a', padding: 12, marginHorizontal: 16, borderRadius: 8, marginBottom: 16 },
+  tipText: { color: '#ccc', fontSize: 14, marginLeft: 8 },
+  segmentItem: { flexDirection: 'row', alignItems: 'center', padding: 12, marginHorizontal: 16, marginBottom: 12, borderRadius: 8 },
+  thumbnail: { width: 60, height: 80, borderRadius: 6, backgroundColor: '#333' },
+  segmentInfo: { flex: 1, marginLeft: 12, marginRight: 8 },
+  questionText: { color: '#fff', fontSize: 15, fontWeight: 'bold', marginBottom: 8 },
+  durationText: { color: '#888', fontSize: 12 },
+  deleteButton: { padding: 8 },
+  footer: { padding: 16, borderTopWidth: 1, borderColor: '#1a1a1a' },
+  submitButton: { backgroundColor: '#007AFF', borderRadius: 12, height: 50, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+  submitButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold', marginRight: 8 },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 },
+  loadingText: { color: '#fff', marginTop: 16, fontSize: 18, fontWeight: 'bold' },
+  loadingSubText: { color: '#aaa', marginTop: 8, fontSize: 14 }
 });
 
 export default EditStoryScreen;

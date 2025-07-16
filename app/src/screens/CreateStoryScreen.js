@@ -252,8 +252,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   footer: {
-    padding: 20,
-    paddingBottom: 30,
+    padding: 20
   },
   continueButton: {
     backgroundColor: '#007AFF',

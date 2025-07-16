@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,24 +11,21 @@ import {
   Platform,
   Share
 } from 'react-native';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
-import Video from 'expo-video';
+import { Video } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
   useSharedValue,
-  useAnimatedStyle,
-  useAnimatedGestureHandler,
-  withSpring,
-  runOnJS,
+  useAnimatedStyle
 } from 'react-native-reanimated';
+
 const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
-  const insets = useSafeAreaInsets();
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const translateY = useSharedValue(0);
   const videoRefs = useRef([]);
+  const insets = useSafeAreaInsets();
 
   const stories = [
     {
@@ -102,29 +99,6 @@ const HomeScreen = ({ navigation }) => {
     },
   ];
 
-  const gestureHandler = useAnimatedGestureHandler({
-    onStart: (_, context) => {
-      context.startY = translateY.value;
-    },
-    onActive: (event, context) => {
-      translateY.value = context.startY + event.translationY;
-    },
-    onEnd: (event) => {
-      const shouldGoToNext = event.translationY < -50 && event.velocityY < -500;
-      const shouldGoToPrev = event.translationY > 50 && event.velocityY > 500;
-
-      if (shouldGoToNext && currentStoryIndex < stories.length - 1) {
-        translateY.value = withSpring(-height);
-        runOnJS(setCurrentStoryIndex)(currentStoryIndex + 1);
-      } else if (shouldGoToPrev && currentStoryIndex > 0) {
-        translateY.value = withSpring(height);
-        runOnJS(setCurrentStoryIndex)(currentStoryIndex - 1);
-      } else {
-        translateY.value = withSpring(0);
-      }
-    },
-  });
-
   const handleShare = async (story) => {
     try {
       const result = await Share.share({
@@ -173,7 +147,7 @@ const HomeScreen = ({ navigation }) => {
         style={styles.video}
         source={{ uri: item.videoUrl }}
         resizeMode="cover"
-        isPlaying={index === currentStoryIndex}
+        shouldPlay={index === currentStoryIndex}
         isLooping
         muted={false}
       />
@@ -181,8 +155,22 @@ const HomeScreen = ({ navigation }) => {
       {/* Gradient Overlay */}
       <View style={styles.gradientOverlay} />
 
+      {/* Progress Bar */}
+      <View style={[styles.progressContainer, { top: insets.top + 10 }]}>
+        {stories.map((_, idx) => (
+          <View
+            key={idx}
+            style={[
+              styles.progressBar,
+              idx === currentStoryIndex && styles.activeProgressBar,
+              idx < currentStoryIndex && styles.completedProgressBar,
+            ]}
+          />
+        ))}
+      </View>
+
       {/* Top Header */}
-      <View style={styles.topHeader}>
+      <View style={[styles.topHeader, { top: insets.top + 40 }]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.navigate('Profile')}
@@ -196,7 +184,12 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.userNameContainer}>
               <Text style={styles.userName}>{item.user.name}</Text>
               {item.user.verified && (
-                <Ionicons name="checkmark-circle" size={16} color="#007AFF" />
+                <Ionicons 
+                  name="checkmark-circle" 
+                  size={16} 
+                  color="#007AFF" 
+                  style={styles.verifiedIcon} 
+                />
               )}
             </View>
             <Text style={styles.timeAgo}>{item.createdAt}</Text>
@@ -222,7 +215,10 @@ const HomeScreen = ({ navigation }) => {
 
       {/* Right Actions */}
       <View style={styles.rightActions}>
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => handleLike(index)}
+        >
           <Ionicons
             name={item.isLiked ? "heart" : "heart-outline"}
             size={32}
@@ -236,7 +232,10 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.actionText}>{formatNumber(item.comments)}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton} onPress={() => handleShare(item)}> {/* <--- Thêm onPress */}
+        <TouchableOpacity 
+          style={styles.actionButton} 
+          onPress={() => handleShare(item)}
+        >
           <Ionicons name="arrow-redo-outline" size={28} color="#fff" />
           <Text style={styles.actionText}>{formatNumber(item.shares)}</Text>
         </TouchableOpacity>
@@ -249,45 +248,29 @@ const HomeScreen = ({ navigation }) => {
           <Ionicons name="volume-high-outline" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
-
-      <View style={styles.progressContainer}>
-        {stories.map((_, idx) => (
-          <View
-            key={idx}
-            style={[
-              styles.progressDot,
-              idx === currentStoryIndex && styles.activeProgressDot,
-              idx < currentStoryIndex && styles.completedProgressDot,
-            ]}
-          />
-        ))}
-      </View>
     </View>
   );
 
   return (
-    <View style={[styles.container, { paddingTop: Platform.OS === 'android' ? 0 : insets.top }]}>
-      <PanGestureHandler onGestureEvent={gestureHandler}>
-        <Animated.View style={[styles.container, animatedStyle]}>
-          <FlatList
-            data={stories}
-            renderItem={renderStory}
-            keyExtractor={(item) => item.id.toString()}
-            pagingEnabled
-            vertical
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 90 : 95 + insets.bottom }}
-            onMomentumScrollEnd={(event) => {
-              const index = Math.round(event.nativeEvent.contentOffset.y / height);
-              setCurrentStoryIndex(index);
-            }}
-          />
-        </Animated.View>
-      </PanGestureHandler>
+    <View style={styles.container}>
+      <Animated.View style={[styles.container, animatedStyle]}>
+        <FlatList
+          data={stories}
+          renderItem={renderStory}
+          keyExtractor={(item) => item.id.toString()}
+          pagingEnabled
+          vertical
+          showsVerticalScrollIndicator={false}
+          onMomentumScrollEnd={(event) => {
+            const index = Math.round(event.nativeEvent.contentOffset.y / height);
+            setCurrentStoryIndex(index);
+          }}
+        />
+      </Animated.View>
 
       {/* Floating Create Button */}
       <TouchableOpacity
-        style={styles.createButton}
+        style={[styles.createButton, { bottom: insets.bottom + 30 }]}
         onPress={() => navigation.navigate('CreateStory')}
       >
         <Ionicons name="add" size={24} color="#fff" />
@@ -317,11 +300,32 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  progressContainer: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    zIndex: 10,
+  },
+  progressBar: {
+    height: 3,
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.4)',
+    marginHorizontal: 2,
+    borderRadius: 2,
+  },
+  activeProgressBar: {
+    backgroundColor: '#fff',
+    height: 4,
+  },
+  completedProgressBar: {
+    backgroundColor: '#007AFF',
   },
   topHeader: {
     position: 'absolute',
-    top: 50,
     left: 0,
     right: 0,
     flexDirection: 'row',
@@ -331,6 +335,9 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginRight: 12,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 20,
+    padding: 5,
   },
   userInfo: {
     flex: 1,
@@ -338,10 +345,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     marginRight: 12,
+    borderWidth: 2,
+    borderColor: '#fff',
   },
   userDetails: {
     flex: 1,
@@ -354,18 +363,24 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-    marginRight: 4,
+    marginRight: 6,
+  },
+  verifiedIcon: {
+    marginLeft: 4,
   },
   timeAgo: {
-    color: '#ccc',
+    color: '#e0e0e0',
     fontSize: 12,
+    marginTop: 2,
   },
   menuButton: {
     padding: 8,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 20,
   },
   topicBadge: {
     position: 'absolute',
-    top: 110,
+    top: 100,
     left: 16,
     flexDirection: 'row',
     alignItems: 'center',
@@ -373,41 +388,49 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 20,
     zIndex: 10,
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   topicText: {
     color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginLeft: 4,
+    fontSize: 13,
+    fontWeight: '600',
+    marginLeft: 6,
   },
   storyContent: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 120,
     left: 16,
     right: 80,
     zIndex: 10,
   },
   storyTitle: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: 8,
+    textShadowColor: 'rgba(0,0,0,0.7)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   storyDescription: {
-    color: '#ccc',
-    fontSize: 14,
-    lineHeight: 20,
+    color: '#f0f0f0',
+    fontSize: 15,
+    lineHeight: 22,
+    textShadowColor: 'rgba(0,0,0,0.7)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   rightActions: {
     position: 'absolute',
     right: 16,
-    bottom: 100,
+    bottom: 120,
     alignItems: 'center',
     zIndex: 10,
   },
   actionButton: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
+    padding: 8,
   },
   actionText: {
     color: '#fff',
@@ -415,46 +438,23 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontWeight: 'bold',
   },
-  progressContainer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 16,
-    right: 16,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    zIndex: 10,
-  },
-  progressDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.5)',
-    marginHorizontal: 3,
-  },
-  activeProgressDot: {
-    backgroundColor: '#fff',
-  },
-  completedProgressDot: {
-    backgroundColor: '#007AFF',
-  },
   createButton: {
     position: 'absolute',
-    bottom: 40,
     right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#007AFF',
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: '#FF3A57',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: '#FF3A57',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 8,
   },
 });
 

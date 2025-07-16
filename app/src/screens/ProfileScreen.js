@@ -146,7 +146,7 @@ const ProfileScreen = ({ navigation }) => {
         contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 90 : 95 + insets.bottom }}
       >
         {/* Header */}
-        <View style={[styles.header, { paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0 }]}>
+        <View style={[styles.header]}>
           <TouchableOpacity style={styles.settingsButton} onPress={showSettingsModal}>
             <Ionicons name="settings-outline" size={24} color="#fff" />
           </TouchableOpacity>
