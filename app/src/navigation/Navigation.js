@@ -21,6 +21,7 @@ import AnalyticsScreen from '../screens/AnalyticsScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
+import InteractionScreen from '../screens/InteractionScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -50,6 +51,7 @@ const MainStack = () => (
     }}
   >
     <Stack.Screen name="MainTabs" component={BottomNavigation} />
+    <Stack.Screen name="Interaction" component={InteractionScreen} options={{ presentation: 'modal' }} />
     <Stack.Screen name="CreateStory" component={CreateStoryScreen} />
     <Stack.Screen name="QuestionSelection" component={QuestionSelectionScreen} />
     <Stack.Screen name="RecordVideo" component={RecordVideoScreen} />
