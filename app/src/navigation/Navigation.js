@@ -16,6 +16,8 @@ import EditProfileScreen from '../screens/EditProfileScreen';
 import SavedStoriesScreen from '../screens/SavedStoriesScreen';
 import ActivityScreen from '../screens/ActivityScreen';
 import AnalyticsScreen from '../screens/AnalyticsScreen';
+import SearchScreen from '../screens/SearchScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 // Auth screens
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -51,7 +53,16 @@ const MainStack = () => (
     }}
   >
     <Stack.Screen name="MainTabs" component={BottomNavigation} />
-    <Stack.Screen name="Interaction" component={InteractionScreen} options={{ presentation: 'modal' }} />
+    <Stack.Screen name="Search" component={SearchScreen} />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen 
+      name="Interaction" 
+      component={InteractionScreen} 
+      options={{ 
+        presentation: 'modal',
+        orientation: 'landscape'
+      }} 
+    />
     <Stack.Screen name="CreateStory" component={CreateStoryScreen} />
     <Stack.Screen name="QuestionSelection" component={QuestionSelectionScreen} />
     <Stack.Screen name="RecordVideo" component={RecordVideoScreen} />

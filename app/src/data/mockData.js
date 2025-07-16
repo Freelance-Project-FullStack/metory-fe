@@ -15,14 +15,27 @@ export const stories = [
       {
         question: 'Giới thiệu về bản thân', // Câu hỏi mặc định
         videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
+        category: 'Cá nhân'
       },
       {
         question: 'kỷ niệm đáng nhớ nhất trong chuyến đi là gì',
         videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_2MB.mp4',
+        category: 'Chuyến đi'
       },
       {
         question: 'bạn cảm thấy thế nào về Đà Lạt',
         videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_5MB.mp4',
+        category: 'Chuyến đi'
+      },
+      {
+        question: 'điều gì khiến bạn ấn tượng nhất về Đà Lạt',
+        videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
+        category: 'Chuyến đi'
+      },
+      {
+        question: 'bạn đi với ai trong chuyến đi này',
+        videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_2MB.mp4',
+        category: 'Chuyến đi'
       },
     ],
   },
@@ -39,10 +52,22 @@ export const stories = [
       {
         question: 'Giới thiệu về bản thân',
         videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
+        category: 'Cá nhân'
       },
       {
         question: 'mục tiêu lớn nhất hiện tại của bạn là gì',
         videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_2mb.mp4',
+        category: 'Tương lai'
+      },
+      {
+        question: 'bạn mong muốn gì từ bản thân 10 năm nữa',
+        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
+        category: 'Tương lai'
+      },
+      {
+        question: 'điều gì khiến bạn hạnh phúc nhất hiện tại',
+        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_2mb.mp4',
+        category: 'Cá nhân'
       },
     ],
   },
