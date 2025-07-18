@@ -19,11 +19,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import {myprofile} from '../data/mockData'
 
 const HEADER_HEIGHT = 60; // Chiều cao ước tính của header
 
 const InteractionScreen = ({ route, navigation }) => {
   const { story } = route.params;
+  if (!story.user) story.user = myprofile
   const { metoryData, user } = story;
   const insets = useSafeAreaInsets(); // Hook để lấy vùng an toàn
 
@@ -183,8 +185,8 @@ const InteractionScreen = ({ route, navigation }) => {
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
           <View style={styles.userInfo}>
-            <Image source={{ uri: user.avatar }} style={styles.avatar} />
-            <Text style={styles.userName}>{user.name}</Text>
+            <Image source={{ uri: user?.avatar }} style={styles.avatar} />
+            <Text style={styles.userName}>{user?.name}</Text>
           </View>
           <TouchableOpacity style={styles.headerButton}>
             <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
