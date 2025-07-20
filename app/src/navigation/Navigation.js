@@ -18,6 +18,7 @@ import ActivityScreen from '../screens/ActivityScreen';
 import AnalyticsScreen from '../screens/AnalyticsScreen';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import VideoFeedScreen from '../screens/VideoFeedScreen';
 
 // Auth screens
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -55,6 +56,15 @@ const MainStack = () => (
     <Stack.Screen name="MainTabs" component={BottomNavigation} />
     <Stack.Screen name="Search" component={SearchScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen 
+      name="VideoFeed" 
+      component={VideoFeedScreen} 
+      options={{ 
+        headerShown: false,
+        presentation: 'fullScreenModal',
+        orientation: 'portrait'
+      }} 
+    />
     <Stack.Screen 
       name="Interaction" 
       component={InteractionScreen} 

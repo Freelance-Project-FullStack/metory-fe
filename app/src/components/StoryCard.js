@@ -1,9 +1,11 @@
 // src/components/StoryCard.js
 
 import React from 'react';
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const StoryCard = ({ story, onPress }) => {
   return (
@@ -18,7 +20,8 @@ const StoryCard = ({ story, onPress }) => {
           style={styles.gradient}
         />
         <View style={styles.userInfo}>
-            <Ionicons name="play-circle" size={48} color="rgba(255, 255, 255, 0.8)" />
+            <Ionicons name="play-circle" size={64} color="rgba(255, 255, 255, 0.9)" />
+            <Text style={styles.playText}>Tap để xem</Text>
         </View>
         <View style={styles.content}>
           <Text style={styles.title}>{story.title}</Text>
@@ -31,9 +34,9 @@ const StoryCard = ({ story, onPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    margin: 8,
-    aspectRatio: 3 / 4, // Tỷ lệ khung hình chuẩn cho story
+    width: screenWidth,
+    height: screenHeight * 0.8, // 80% của màn hình
+    marginVertical: 4,
     borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -54,12 +57,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  playText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 8,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
   content: {
-    padding: 12,
+    padding: 16,
   },
   title: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: -1, height: 1 },
@@ -67,8 +79,9 @@ const styles = StyleSheet.create({
   },
   description: {
      color: '#e0e0e0',
-     fontSize: 13,
-     marginTop: 4,
+     fontSize: 16,
+     marginTop: 6,
+     lineHeight: 22,
   }
 });
 
