@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {trendingTopics,users, stories} from '../data/mockData'
 
 const SearchScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -27,9 +26,74 @@ const SearchScreen = ({ navigation }) => {
     'Công nghệ mới',
   ]);
 
+  const trendingTopics = [
+    { id: 1, title: 'Du lịch', count: '2.5K stories', color: '#ff6b6b' },
+    { id: 2, title: 'Ẩm thực', count: '1.8K stories', color: '#4ecdc4' },
+    { id: 3, title: 'Thể thao', count: '1.2K stories', color: '#45b7d1' },
+    { id: 4, title: 'Công nghệ', count: '950 stories', color: '#96ceb4' },
+    { id: 5, title: 'Âm nhạc', count: '800 stories', color: '#feca57' },
+    { id: 6, title: 'Phim ảnh', count: '650 stories', color: '#ff9ff3' },
+  ];
+
   const searchResults = {
-    stories,
-    users
+    stories: [
+      {
+        id: 1,
+        title: 'Chuyến đi Đà Lạt 2024',
+        user: 'Minh Anh',
+        thumbnail: 'https://picsum.photos/200/200?random=1',
+        views: '12K',
+        duration: '45s',
+        topic: 'Du lịch',
+      },
+      {
+        id: 2,
+        title: 'Món phở bò truyền thống',
+        user: 'Thanh Huy',
+        thumbnail: 'https://picsum.photos/200/200?random=2',
+        views: '8.5K',
+        duration: '38s',
+        topic: 'Ẩm thực',
+      },
+      {
+        id: 3,
+        title: 'Yoga buổi sáng',
+        user: 'Thu Hiền',
+        thumbnail: 'https://picsum.photos/200/200?random=3',
+        views: '15K',
+        duration: '52s',
+        topic: 'Thể thao',
+      },
+    ],
+    users: [
+      {
+        id: 1,
+        name: 'Minh Anh',
+        username: '@minhanh_travel',
+        avatar: 'https://picsum.photos/100/100?random=1',
+        followers: '125K',
+        verified: true,
+        bio: 'Travel enthusiast & storyteller',
+      },
+      {
+        id: 2,
+        name: 'Thanh Huy',
+        username: '@chef_huy',
+        avatar: 'https://picsum.photos/100/100?random=2',
+        followers: '89K',
+        verified: false,
+        bio: 'Food lover sharing recipes',
+      },
+      {
+        id: 3,
+        name: 'Thu Hiền',
+        username: '@yoga_hien',
+        avatar: 'https://picsum.photos/100/100?random=3',
+        followers: '210K',
+        verified: true,
+        bio: 'Yoga instructor & wellness coach',
+      },
+    ],
   };
 
   const clearRecentSearch = (index) => {

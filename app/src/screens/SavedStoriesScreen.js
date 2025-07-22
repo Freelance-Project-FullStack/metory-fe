@@ -10,10 +10,80 @@ import {
   FlatList,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import {savedStories, collections} from '../data/mockData'
 
 const SavedStoriesScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('all'); // 'all' or 'collections'
+
+  const savedStories = [
+    {
+      id: 1,
+      title: 'Chuyến đi Đà Lạt tuyệt vời',
+      user: 'Minh Anh',
+      thumbnail: 'https://picsum.photos/200/200?random=1',
+      duration: '45s',
+      views: '12K',
+      savedAt: '2 ngày trước',
+      topic: 'Du lịch',
+      topicColor: '#ff6b6b',
+    },
+    {
+      id: 2,
+      title: 'Cách làm phở bò ngon',
+      user: 'Chef Huy',
+      thumbnail: 'https://picsum.photos/200/200?random=2',
+      duration: '1:20',
+      views: '8.5K',
+      savedAt: '5 ngày trước',
+      topic: 'Ẩm thực',
+      topicColor: '#4ecdc4',
+    },
+    {
+      id: 3,
+      title: 'Yoga buổi sáng cho người mới',
+      user: 'Thu Hiền',
+      thumbnail: 'https://picsum.photos/200/200?random=3',
+      duration: '52s',
+      views: '15K',
+      savedAt: '1 tuần trước',
+      topic: 'Sức khỏe',
+      topicColor: '#45b7d1',
+    },
+    {
+      id: 4,
+      title: 'Review iPhone 15 Pro Max',
+      user: 'Tech Reviewer',
+      thumbnail: 'https://picsum.photos/200/200?random=4',
+      duration: '2:15',
+      views: '25K',
+      savedAt: '2 tuần trước',
+      topic: 'Công nghệ',
+      topicColor: '#96ceb4',
+    },
+  ];
+
+  const collections = [
+    {
+      id: 1,
+      name: 'Du lịch',
+      count: 12,
+      thumbnail: 'https://picsum.photos/150/150?random=collection1',
+      color: '#ff6b6b',
+    },
+    {
+      id: 2,
+      name: 'Ẩm thực',
+      count: 8,
+      thumbnail: 'https://picsum.photos/150/150?random=collection2',
+      color: '#4ecdc4',
+    },
+    {
+      id: 3,
+      name: 'Công nghệ',
+      count: 15,
+      thumbnail: 'https://picsum.photos/150/150?random=collection3',
+      color: '#96ceb4',
+    },
+  ];
 
   const renderStoryItem = ({ item }) => (
     <TouchableOpacity style={styles.storyItem}>

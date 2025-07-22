@@ -10,10 +10,85 @@ import {
   FlatList,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import {activities} from '../data/mockData'
 
 const ActivityScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('all'); // 'all', 'likes', 'comments', 'follows'
+
+  const activities = [
+    {
+      id: 1,
+      type: 'like',
+      user: {
+        name: 'Minh Anh',
+        avatar: 'https://picsum.photos/100/100?random=1',
+        verified: true,
+      },
+      story: {
+        title: 'Chuyến đi Đà Lạt',
+        thumbnail: 'https://picsum.photos/150/150?random=story1',
+      },
+      timestamp: '5 phút trước',
+      isRead: false,
+    },
+    {
+      id: 2,
+      type: 'comment',
+      user: {
+        name: 'Thu Hiền',
+        avatar: 'https://picsum.photos/100/100?random=2',
+        verified: false,
+      },
+      story: {
+        title: 'Yoga buổi sáng',
+        thumbnail: 'https://picsum.photos/150/150?random=story2',
+      },
+      comment: 'Video rất hữu ích! Cảm ơn bạn đã chia sẻ 💪',
+      timestamp: '1 giờ trước',
+      isRead: false,
+    },
+    {
+      id: 3,
+      type: 'follow',
+      user: {
+        name: 'Chef Huy',
+        avatar: 'https://picsum.photos/100/100?random=3',
+        verified: true,
+      },
+      timestamp: '2 giờ trước',
+      isRead: true,
+    },
+    {
+      id: 4,
+      type: 'like',
+      user: {
+        name: 'Lan Phương',
+        avatar: 'https://picsum.photos/100/100?random=4',
+        verified: false,
+      },
+      story: {
+        title: 'Món phở bò truyền thống',
+        thumbnail: 'https://picsum.photos/150/150?random=story3',
+      },
+      timestamp: '3 giờ trước',
+      isRead: true,
+    },
+    {
+      id: 5,
+      type: 'comment',
+      user: {
+        name: 'Văn Đức',
+        avatar: 'https://picsum.photos/100/100?random=5',
+        verified: false,
+      },
+      story: {
+        title: 'Coding tips for beginners',
+        thumbnail: 'https://picsum.photos/150/150?random=story4',
+      },
+      comment: 'Hay quá! Mình đang học lập trình nên rất cần những tips này',
+      timestamp: '1 ngày trước',
+      isRead: true,
+    },
+  ];
 
   const getFilteredActivities = () => {
     if (activeTab === 'all') return activities;

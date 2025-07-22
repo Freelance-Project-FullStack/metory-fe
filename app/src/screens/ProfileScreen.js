@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {myStories, myprofile} from '../data/mockData'
 
 const ProfileScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -22,7 +21,40 @@ const ProfileScreen = ({ navigation }) => {
   const [notifications, setNotifications] = useState(true);
   const [autoPlay, setAutoPlay] = useState(true);
 
-  const user = myprofile
+  const user = {
+    name: 'Nguyễn Văn A',
+    username: '@nguyenvana',
+    avatar: 'https://picsum.photos/150/150?random=user',
+    followers: '1.2K',
+    following: '453',
+    stories: '89',
+    bio: 'Content creator & storyteller 📹\nSaigon, Vietnam 🇻🇳',
+    verified: true,
+  };
+
+  const myStories = [
+    {
+      id: 1,
+      thumbnail: 'https://picsum.photos/200/200?random=story1',
+      title: 'Chuyến đi Đà Lạt',
+      views: '1.2K',
+      likes: '89',
+    },
+    {
+      id: 2,
+      thumbnail: 'https://picsum.photos/200/200?random=story2',
+      title: 'Món phở sài gòn',
+      views: '856',
+      likes: '67',
+    },
+    {
+      id: 3,
+      thumbnail: 'https://picsum.photos/200/200?random=story3',
+      title: 'Yoga buổi sáng',
+      views: '2.1K',
+      likes: '145',
+    },
+  ];
 
   const menuItems = [
     {
