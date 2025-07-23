@@ -71,5 +71,36 @@ export const stories = [
       },
     ],
   },
-   // Thêm các stories khác ở đây...
+  {
+    id: '3',
+    user: {
+      name: 'Thanh Huy33',
+      avatar: 'https://picsum.photos/100/100?random=2',
+    },
+    title: 'Gửi tôi của 10 năm sau',
+    thumbnail: 'https://picsum.photos/400/600?random=2',
+    description: 'Những lời nhắn nhủ cho chính bản thân mình trong tương lai.',
+     metoryData: [
+      {
+        question: 'Giới thiệu về bản thân',
+        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
+        category: 'Cá nhân'
+      },
+      {
+        question: 'mục tiêu lớn nhất hiện tại của bạn là gì',
+        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_2mb.mp4',
+        category: 'Tương lai'
+      },
+      {
+        question: 'bạn mong muốn gì từ bản thân 10 năm nữa',
+        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
+        category: 'Tương lai'
+      },
+      {
+        question: 'điều gì khiến bạn hạnh phúc nhất hiện tại',
+        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_2mb.mp4',
+        category: 'Cá nhân'
+      },
+    ],
+  },
 ];
